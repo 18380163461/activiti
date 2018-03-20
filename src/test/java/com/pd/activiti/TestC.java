@@ -12,7 +12,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description:
@@ -21,7 +23,7 @@ import java.util.List;
  */
 @RunWith(JUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext.xml")
-public class Test1 {
+public class TestC {
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 
     /**
@@ -42,7 +44,7 @@ public class Test1 {
     @Test
     public void tetDefaultProcessEngine() {
         RepositoryService repositoryService = processEngine.getRepositoryService();
-        Deployment deployment = repositoryService.createDeployment().name("部署的第一个流程").addClasspathResource("activiiti/b.bpmn").deploy();
+        Deployment deployment = repositoryService.createDeployment().name("部署的第一个流程").addClasspathResource("activiiti/d.bpmn").deploy();
         System.out.println(deployment);
     }
 
@@ -51,10 +53,13 @@ public class Test1 {
      */
     @Test
     public void startProcessInstanceByKey() {
-        ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("helloword");
+        Map<String, Object> var = new HashMap<String, Object>();
+//        var.put("userID","1993userid");
+        ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("myProcess_d");
         System.out.println(processInstance);
         System.out.println(processInstance.getId());
         System.out.println(processInstance.getProcessDefinitionId());
+//        processEngine.getRuntimeService().startProcessInstanceByKey();
     }
 
     /**
@@ -62,7 +67,7 @@ public class Test1 {
      */
     @Test
     public void createTaskQuery() {
-        String name = "李四";
+        String name = "王五";//28101
         List<Task> tasks = processEngine.getTaskService().createTaskQuery().taskAssignee(name).list();
         for (Task task : tasks) {
             System.out.println("任务id：" + task.getId());
@@ -78,7 +83,7 @@ public class Test1 {
      */
     @Test
     public void complete() {
-        String id = "15605";
+        String id = "78102";
         processEngine.getTaskService().complete(id);
         System.out.println("完成了我的任务" + id);
     }
@@ -109,7 +114,12 @@ public class Test1 {
         String id = "5601";
         List<HistoricTaskInstance> historicTaskInstances = processEngine.getHistoryService().createHistoricTaskInstanceQuery().processInstanceId(id).list();
         for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
-            System.out.println( historicTaskInstance.getAssignee());
+            System.out.println(historicTaskInstance.getAssignee());
         }
+    }
+
+    @Test
+    public void bb() {
+        List<Task> tasks = processEngine.getTaskService().createTaskQuery().taskCandidateGroupIn(null).list();
     }
 }
